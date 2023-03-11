@@ -10,13 +10,9 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-	console.log('Congratulations, your extension "headreplacer" is now2 active!');
-
 	
 	vscode.workspace.onDidChangeTextDocument(function(event) {
 		event.contentChanges.forEach((change) => {
-			console.log(change.text)
-
 
 			vscode.env.clipboard.readText()
 				.then(function(clipboardText) {
@@ -39,11 +35,30 @@ function activate(context) {
 		})
 	})
 
-	//const commandHandler = () => {
-		//console.log(`Hello world! Jeg har lavet en command`);
-	//};
+	const commandHandler = () => {
+		const editor = vscode.window.activeTextEditor;
 
-	//context.subscriptions.push(vscode.commands.registerCommand(command, commandHandler));
+		if (editor) {
+			const document = editor.document;
+			const selection = editor.selection;
+			const word = document.getText(selection)
+
+			if(word.startsWith("/give @p skull 1 3")) {
+				let replacedString = replaceHeadString(word)
+				let editor = vscode.window.activeTextEditor;
+
+				editor.edit(editBuilder => {
+					let startPos = new vscode.Position(selection.start.line, selection.start.character)
+					let endPos = new vscode.Position(selection.start.line, selection.start.character + word.length)
+					let range = new vscode.Range(startPos, endPos)
+
+					editBuilder.replace(range, replacedString)
+				})
+			}
+		}
+	};
+
+	context.subscriptions.push(vscode.commands.registerCommand("headreplacer.ReplaceHeadString", commandHandler));
 }
 
 function replaceHeadString(string) {

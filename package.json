@@ -13,8 +13,8 @@
   "main": "./extension.js",
   "contributes": {
     "commands": [{
-      "command": "headreplacer.helloWorld",
-      "title": "Hello World"
+      "command": "headreplacer.ReplaceHeadString",
+      "title": "Replace a head string"
     }]
   },
   "scripts": {
